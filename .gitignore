@@ -1,0 +1,9 @@
+node_modules/
+update.cmd
+update
+npx.cmd
+npx
+npm.cmd
+npm
+eslint.cmd
+eslint
