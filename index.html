@@ -13,14 +13,26 @@
     />
   </head>
   <body>
-    <div class="gameBoard">
-      <div id="celeste" class="color celeste left" data-color="celeste"></div>
-      <div id="violeta" class="color violeta right" data-color="violeta"></div>
-      <div id="naranja" class="color naranja left" data-color="naranja"></div>
-      <div id="verde" class="color verde right" data-color="verde"></div>
-      <button id="btnEmpezar" class="btn-start" onclick="startGame()">
-        Empezar a jugar!
-      </button>
+    <div id="game">
+      <div id="headGame">
+        <h2>
+          Nivel actual:
+          <span id="level">Da click en el botón empezar juego</span>
+        </h2>
+      </div>
+      <div class="gameBoard">
+        <div id="celeste" class="color celeste left" data-color="celeste"></div>
+        <div
+          id="violeta"
+          class="color violeta right"
+          data-color="violeta"
+        ></div>
+        <div id="naranja" class="color naranja left" data-color="naranja"></div>
+        <div id="verde" class="color verde right" data-color="verde"></div>
+        <button id="btnEmpezar" class="btn-start" onclick="startGame()">
+          Empezar a jugar!
+        </button>
+      </div>
     </div>
     <script src="js/index.js"></script>
   </body>
