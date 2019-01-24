@@ -8,21 +8,29 @@ const lvlTag = document.getElementById('level');
  * Final level to win the game.
  */
 const finalLevel = 10;
+/**
+ * Numbers of colors in the game.
+ */
 const numberOfColors = 4;
 
 class Game {
   constructor() {
+    this.initializer = this.initializer.bind(this);
     this.initializer();
     this.generateSequence();
-    this.nextLevel();
+    setTimeout(this.nextLevel, 700);
   } // End constructor
 
+  /**
+   * Initialize the parameters of the game.
+   */
   initializer() {
     this.level = 1;
-    this.changeTagLevel();
+    this.changeTagLevel(`Da click en el botón empezar juego`);
     this.chooseColor = this.chooseColor.bind(this);
     this.nextLevel = this.nextLevel.bind(this);
-    btnEmpezar.classList.add('hide');
+    this.removeButtonListener = this.removeButtonListener.bind(this);
+    this.toggleBtnStart();
     this.colors = {
       celeste,
       violeta,
@@ -31,45 +39,41 @@ class Game {
     };
   } // End initializer
 
-  changeTagLevel() {
-    lvlTag.innerText = this.level;
-  }
+  /**
+   * Show a text `String` on html control.
+   * @param {String} text message to display.
+   */
+  changeTagLevel(text = ``) {
+    lvlTag.innerText = text;
+  } //End changeTagLevel
 
+  /**
+   * Does the logic when the game change to the next level.
+   */
   nextLevel() {
     this.subLevel = 0;
+    this.changeTagLevel(this.level);
     this.illuminateSequence();
     this.addButtonListener();
-  }
+  } // End nextLevel
 
+  /**
+   * Add a click listener for every button in the game.
+   */
   addButtonListener() {
     for (const color in this.colors) {
       this.colors[color].addEventListener(`click`, this.chooseColor);
     }
-  }
+  } // End addButtonListener
 
+  /**
+   * Remove a click listeners for every button in the game.
+   */
   removeButtonListener() {
-    /*
     for (const color in this.colors) {
-      this.colors[color].removeEventListener(
-        `click`,
-        this.chooseColor.bind(this)
-      );
+      this.colors[color].removeEventListener(`click`, this.chooseColor);
     }
-    */
-    this.colors.celeste.removeEventListener(
-      `click`,
-      this.chooseColor.bind(this)
-    );
-    this.colors.violeta.removeEventListener(
-      `click`,
-      this.chooseColor.bind(this)
-    );
-    this.colors.naranja.removeEventListener(
-      `click`,
-      this.chooseColor.bind(this)
-    );
-    this.colors.verde.removeEventListener(`click`, this.chooseColor.bind(this));
-  }
+  } // End removeButtonListener
 
   chooseColor(event) {
     console.log(this);
@@ -80,37 +84,45 @@ class Game {
       this.subLevel++;
       if (this.subLevel === this.level) {
         this.level++;
-        this.changeTagLevel();
+
         this.removeButtonListener();
         if (this.level === finalLevel + 1) {
-          alert(`Ganaste`);
-          console.log(`gano`);
+          this.youWonGame();
         } else {
-          setTimeout(this.nextLevel, 1500);
+          setTimeout(this.nextLevel, 1000);
         }
       }
     } else {
-      console.log(`Perdió`);
-      alert(`Perdió`);
-      //btnEmpezar.classList.remove(`hide`);
+      this.youLostGame();
     }
-  }
+  } // End chooseColor
 
+  /**
+   * Illuminate a sequence based on the current level in the game.
+   */
   illuminateSequence() {
     for (let i = 0; i < this.level; i++) {
       const color = this.changeNumberToColor(this.sequence[i]);
       setTimeout(() => this.illuminateColor(color), 1000 * i);
     }
-  }
+  } // End illuminateSequence
 
+  /**
+   * Illuminates a specific color in the game board.
+   * @param {String} color color name to illuminates.
+   */
   illuminateColor(color) {
     this.colors[color].classList.add(`light`);
     setTimeout(() => this.turnOffColor(color), 450);
-  }
+  } // End illuminateColor
 
+  /**
+   * Darkens a specific color in the game board.
+   * @param {*} color color name color to Darken.
+   */
   turnOffColor(color) {
     this.colors[color].classList.remove(`light`);
-  }
+  } // End turnOffColor
 
   /**
    * Changes a given number color `Number` into their equivalent color name `String`.
@@ -148,11 +160,42 @@ class Game {
     }
   } // End changeColorToNumber
 
+  /**
+   * Generate and fill an array with a sequence of random numbers.
+   */
   generateSequence() {
     this.sequence = new Array(finalLevel)
       .fill(0)
       .map(element => Math.floor(Math.random() * numberOfColors));
-  }
+  } // End generateSequence
+
+  /**
+   * Hides or displays the button to start to play
+   */
+  toggleBtnStart() {
+    if (btnEmpezar.classList.contains('hide'))
+      btnEmpezar.classList.remove('hide');
+    else btnEmpezar.classList.add('hide');
+  } // End toggleBtnStart
+
+  /**
+   * Show the message when the player won the game and restart the game.
+   */
+  youWonGame() {
+    swal('¡Felicidades!', '¡Ganaste!', 'success').then(() =>
+      this.initializer()
+    );
+  } // End youWonGame
+
+  /**
+   * Show the message when the player lost the game and restart the game.
+   */
+  youLostGame() {
+    swal('¡Lo siento!', ' ¡Perdiste! =( ', 'error').then(() => {
+      this.removeButtonListener();
+      this.initializer();
+    });
+  } // End youLostGame
 } // End class
 
 function startGame() {
